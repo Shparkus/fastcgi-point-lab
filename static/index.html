@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <title>Попадание точки в область — FastCGI (Java)</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<!-- Шапка -->
+<table class="layout">
+    <tr>
+        <td>
+            <header class="header">
+                <div class="header__title">Лабораторная работа: FastCGI (Java) + AJAX</div>
+                <div class="header__meta">
+                    <span class="header__fio">ФИО: <strong>Иванов Иван Иванович</strong></span>
+                    <span class="header__group">Группа: <strong>XXXX</strong></span>
+                    <span class="header__variant">Вариант: <strong>YY</strong></span>
+                </div>
+            </header>
+        </td>
+    </tr>
+
+    <!-- Контент -->
+    <tr>
+        <td>
+            <table class="content">
+                <tr>
+                    <!-- Левая колонка: форма -->
+                    <td class="content__left">
+                        <h2>Ввод данных</h2>
+                        <form id="point-form" method="post" action="#" novalidate>
+                            <table class="form-table">
+                                <tr>
+                                    <td><label for="x">X:</label></td>
+                                    <td><input id="x" name="x" type="text" class="input" placeholder="[-5;5]" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="y">Y:</label></td>
+                                    <td><input id="y" name="y" type="text" class="input" placeholder="[-5;5]" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="r">R:</label></td>
+                                    <td><input id="r" name="r" type="text" class="input" placeholder="(0;5]" /></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <button type="submit" class="btn">Проверить</button>
+                                        <button type="button" id="clear" class="btn btn--ghost">Очистить таблицу</button>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p class="hint">Данные отправляются <strong>POST</strong>-запросом через AJAX к FastCGI-серверу.</p>
+                            <div id="errors" class="errors" aria-live="polite"></div>
+                        </form>
+                    </td>
+
+                    <!-- Правая колонка: график -->
+                    <td class="content__right">
+                        <h2>График области</h2>
+                        <div class="graph">
+                            <img src="img/graph.png" alt="График области" />
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+    <!-- История -->
+    <tr>
+        <td>
+            <h2>Результаты</h2>
+            <table id="results" class="results">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>X</th>
+                    <th>Y</th>
+                    <th>R</th>
+                    <th>Попадание</th>
+                    <th>Время сервера</th>
+                    <th>Время работы (μs)</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- строки будут добавляться JS -->
+                </tbody>
+            </table>
+        </td>
+    </tr>
+
+    <!-- Футер -->
+    <tr>
+        <td>
+            <footer class="footer">
+                <span class="footer__copy">&copy; FastCGI Java • AJAX • Табличная вёрстка</span>
+            </footer>
+        </td>
+    </tr>
+</table>
+
+<script src="app.js"></script>
+</body>
+</html>
