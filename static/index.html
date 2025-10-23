@@ -1,106 +1,118 @@
 <!doctype html>
 <html lang="ru">
 <head>
-    <meta charset="utf-8" />
-    <title>Попадание точки в область — FastCGI (Java)</title>
-    <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8" />
+    <title>ЛР #1 · FastCGI (Java) · Попадание в область</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="styles/favicon.png" />
+    <link rel="stylesheet" href="styles/main.css" />
+    <script defer src="index.js"></script>
 </head>
 <body>
-<!-- Шапка -->
-<table class="layout">
+<table class="page">
+    <thead>
     <tr>
-        <td>
-            <header class="header">
-                <div class="header__title">Лабораторная работа: FastCGI (Java) + AJAX</div>
-                <div class="header__meta">
-                    <span class="header__fio">ФИО: <strong>Иванов Иван Иванович</strong></span>
-                    <span class="header__group">Группа: <strong>XXXX</strong></span>
-                    <span class="header__variant">Вариант: <strong>YY</strong></span>
-                </div>
-            </header>
+        <th colspan="2" class="header">
+            <div class="header__title">Лабораторная работа №1</div>
+            <div class="header__meta">
+                <span class="header__fio">ФИО: <span class="mono">Иванов Иван</span></span>
+                <span class="header__group">Группа: <span class="mono">P32xx</span></span>
+                <span class="header__variant">Вариант: <span class="mono">465561</span></span>
+            </div>
+        </th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr class="content">
+        <!-- Левая колонка: форма -->
+        <td class="col col--form">
+            <form action="/calculate" method="POST" id="data-form">
+                <table class="form-table">
+                    <tr>
+                        <th>Выберите X:</th>
+                        <td>
+                            <div id="x-block" class="radio-grid">
+                                <label><input type="radio" name="x" value="-5" /> -5</label>
+                                <label><input type="radio" name="x" value="-4" /> -4</label>
+                                <label><input type="radio" name="x" value="-3" /> -3</label>
+                                <label><input type="radio" name="x" value="-2" /> -2</label>
+                                <label><input type="radio" name="x" value="-1" /> -1</label>
+                                <label><input type="radio" name="x" value="0" /> 0</label>
+                                <label><input type="radio" name="x" value="1" /> 1</label>
+                                <label><input type="radio" name="x" value="2" /> 2</label>
+                                <label><input type="radio" name="x" value="3" /> 3</label>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th><label for="y">Введите Y:</label></th>
+                        <td>
+                            <input type="text" id="y" name="y" placeholder="[-5 … 3]" required />
+                            <small class="hint">Допустимый диапазон: от -5 до 3</small>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Выберите R:</th>
+                        <td>
+                            <div id="r-block" class="radio-grid">
+                                <label><input type="radio" name="r" value="1" /> 1</label>
+                                <label><input type="radio" name="r" value="1.5" /> 1.5</label>
+                                <label><input type="radio" name="r" value="2" /> 2</label>
+                                <label><input type="radio" name="r" value="2.5" /> 2.5</label>
+                                <label><input type="radio" name="r" value="3" /> 3</label>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2" class="actions">
+                            <button type="submit" class="btn">Отправить</button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2">
+                            <div id="error" class="error" hidden></div>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </td>
+
+        <!-- Правая колонка: график -->
+        <td class="col col--graph">
+            <div class="graph-wrap">
+                <div class="graph-title">График</div>
+                <canvas id="graph" width="300" height="300" class="graph"></canvas>
+            </div>
         </td>
     </tr>
 
-    <!-- Контент -->
+    <!-- Низ страницы: таблица результатов -->
     <tr>
-        <td>
-            <table class="content">
-                <tr>
-                    <!-- Левая колонка: форма -->
-                    <td class="content__left">
-                        <h2>Ввод данных</h2>
-                        <form id="point-form" method="post" action="#" novalidate>
-                            <table class="form-table">
-                                <tr>
-                                    <td><label for="x">X:</label></td>
-                                    <td><input id="x" name="x" type="text" class="input" placeholder="[-5;5]" /></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="y">Y:</label></td>
-                                    <td><input id="y" name="y" type="text" class="input" placeholder="[-5;5]" /></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="r">R:</label></td>
-                                    <td><input id="r" name="r" type="text" class="input" placeholder="(0;5]" /></td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td>
-                                        <button type="submit" class="btn">Проверить</button>
-                                        <button type="button" id="clear" class="btn btn--ghost">Очистить таблицу</button>
-                                    </td>
-                                </tr>
-                            </table>
-                            <p class="hint">Данные отправляются <strong>POST</strong>-запросом через AJAX к FastCGI-серверу.</p>
-                            <div id="errors" class="errors" aria-live="polite"></div>
-                        </form>
-                    </td>
-
-                    <!-- Правая колонка: график -->
-                    <td class="content__right">
-                        <h2>График области</h2>
-                        <div class="graph">
-                            <img src="img/graph.png" alt="График области" />
-                        </div>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-
-    <!-- История -->
-    <tr>
-        <td>
-            <h2>Результаты</h2>
-            <table id="results" class="results">
-                <thead>
-                <tr>
-                    <th>#</th>
+        <td colspan="2">
+            <table id="result-table" class="result-table">
+                <tr id="result-table-header">
                     <th>X</th>
                     <th>Y</th>
                     <th>R</th>
-                    <th>Попадание</th>
-                    <th>Время сервера</th>
-                    <th>Время работы (μs)</th>
+                    <th>Текущее время</th>
+                    <th>Время выполнения</th>
+                    <th>Результат</th>
                 </tr>
-                </thead>
-                <tbody>
-                <!-- строки будут добавляться JS -->
-                </tbody>
             </table>
         </td>
     </tr>
+    </tbody>
 
-    <!-- Футер -->
+    <tfoot>
     <tr>
-        <td>
-            <footer class="footer">
-                <span class="footer__copy">&copy; FastCGI Java • AJAX • Табличная вёрстка</span>
-            </footer>
-        </td>
+        <td colspan="2" class="footer">© 2025</td>
     </tr>
+    </tfoot>
 </table>
-
-<script src="app.js"></script>
 </body>
 </html>
